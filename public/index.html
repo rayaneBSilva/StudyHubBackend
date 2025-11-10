@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Hub - Plataforma de Estudos Colaborativa</title>
+    <!-- Mudar isso para um arquivo CSS externo e tirar do index.html -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 0;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 20px 0;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-card li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .feature-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .quality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .quality-item {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .quality-item h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .cta {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .cta h2 {
+            margin-bottom: 15px;
+            border: none;
+            color: white;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: white;
+            color: #28a745;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> Study Hub</h1>
+            <p class="subtitle">Plataforma Colaborativa para Criação de Cards de Estudo</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2> Principais Funcionalidades do Sistema</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3> Criação e Gestão de Cards</h3>
+                        <ul>
+                            <li>Criação de cards de resumo por disciplina</li>
+                            <li>Editor de texto rico para conteúdo</li>
+                            <li>Organização por categorias/matérias</li>
+                            <li>Tags para facilitar busca</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3>Biblioteca de Conteúdo</h3>
+                        <ul>
+                            <li>Upload e organização de vídeo-aulas</li>
+                            <li>Compartilhamento de provas anteriores</li>
+                            <li>Banco de questões por disciplina</li>
+                            <li>Materiais de apoio (PDFs, imagens)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3>Sistema de Colaboração</h3>
+                        <ul>
+                            <li>Compartilhamento de cards entre usuários</li>
+                            <li>Avaliação/rating de conteúdo</li>
+                            <li>Comentários e discussões</li>
+                            <li>Grupos de estudo por disciplina</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3> Ferramentas de Estudo</h3>
+                        <ul>
+                            <li>Sistema de revisão espaçada</li>
+                            <li>Quiz baseado nos cards</li>
+                            <li>Cronograma de estudos</li>
+                            <li>Estatísticas de progresso</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>⚡ Características de Qualidade</h2>
+                
+                <div class="quality-grid">
+                    <div class="quality-item">
+                        <span class="emoji"></span>
+                        <h3>Usabilidade</h3>
+                        <p>Interface intuitiva e design responsivo para todos os dispositivos</p>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="emoji"></span>
+                        <h3>Desempenho</h3>
+                        <p>Carregamento rápido e busca instantânea no conteúdo</p>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="emoji"></span>
+                        <h3>Segurança</h3>
+                        <p>Proteção de dados e autenticação segura (LGPD)</p>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <span class="emoji"></span>
+                        <h3>Escalabilidade</h3>
+                        <p>Suporte a muitos usuários e arquitetura modular</p>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <h3>Confiabilidade</h3>
+                        <p>Disponibilidade 99.9% com backup automático</p>
+                    </div>
+                    
+                    <div class="quality-item">
+                        <h3>Compatibilidade</h3>
+                        <p>Multi-plataforma e cross-browser</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta">
+            <h2> Revolucione seus Estudos!</h2>
+            <p>Junte-se à comunidade de estudantes que já descobriram uma forma mais inteligente de estudar</p>
+            <a href="#" class="btn">Começar Agora</a>
+        </div>
+    </div>
+</body>
+</html>
