@@ -34,37 +34,37 @@ Card.init(
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     titulo: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     conteudo: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     disciplina: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     tags: {
-      type: DataTypes.JSON,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
-      defaultValue: []
+      defaultValue: [],
     },
     autor_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: "users",
-        key: "id"
-      }
-    }
+        key: "id",
+      },
+    },
   },
   {
     sequelize,
     tableName: "cards",
-    timestamps: false
+    timestamps: false,
   }
 );
