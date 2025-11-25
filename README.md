@@ -60,3 +60,15 @@ StudyhubBackend/
    git clone https://github.com/rayaneBSilva/StudyHubBackend.git
    cd StudyHubBackend
    ```
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+3. Rode o servidor:
+   ```bash
+   npm run start
+   ```
+5. Acesse no navegador:
+  ```arduino
+   http://localhost:3000
+   ```
