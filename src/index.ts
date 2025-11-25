@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import sequelize from "./config/database";
 import { UserController } from "./controllers/UserController";
 import { CardController } from "./controllers/CardController";
+import { FolderController } from "./controllers/FolderController";
+import { SummaryController } from "./controllers/SummaryController";
 
 dotenv.config();
 
@@ -11,6 +13,8 @@ app.use(express.json());
 
 const userController = new UserController();
 const cardController = new CardController();
+const folderController = new FolderController();
+const summaryController = new SummaryController();
 
 // ROTAS USERS
 app.get("/api/users", userController.getAllUsers);
@@ -30,6 +34,20 @@ app.get(
   "/api/cards/disciplina/:disciplina",
   cardController.getCardsByDisciplina
 );
+
+// ROTAS FOLDER
+app.get("/api/folders", folderController.getAllFolders);
+app.get("/api/folders/:id", folderController.getFolderById);
+app.post("/api/folders", folderController.createFolder);
+app.put("/api/folders/:id", folderController.updateFolder);
+app.delete("/api/folders/:id", folderController.deleteFolder);
+
+// ROTAS SUMMARIES
+app.get("/api/summaries", summaryController.getAllSummaries);
+app.get("/api/summaries/:id", summaryController.getSummaryById);
+app.post("/api/summaries", summaryController.createSummary);
+app.put("/api/summaries/:id", summaryController.updateSummary);
+app.delete("/api/summaries/:id", summaryController.deleteSummary);
 
 const PORT = process.env.PORT || 3000;
 
