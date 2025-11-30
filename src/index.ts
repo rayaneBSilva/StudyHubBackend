@@ -17,37 +17,37 @@ const folderController = new FolderController();
 const summaryController = new SummaryController();
 
 // ROTAS USERS
-app.get("/api/users", userController.getAllUsers);
-app.get("/api/users/:id", userController.getUserById);
-app.post("/api/users", userController.createUser);
-app.put("/api/users/:id", userController.updateUser);
-app.delete("/api/users/:id", userController.deleteUser);
+app.get("/api/users", userController.getAll);
+app.get("/api/users/:id", userController.getById);
+app.post("/api/users", userController.create);
+app.put("/api/users/:id", userController.update);
+app.delete("/api/users/:id", userController.delete);
 app.post("/api/users/login", userController.loginUser);
 
 // ROTAS CARDS
-app.get("/api/cards", cardController.getAllCards);
-app.get("/api/cards/:id", cardController.getCardById);
-app.post("/api/cards", cardController.createCard);
-app.put("/api/cards/:id", cardController.updateCard);
-app.delete("/api/cards/:id", cardController.deleteCard);
+app.get("/api/cards", cardController.getAll);
+app.get("/api/cards/:id", cardController.getById);
+app.post("/api/cards", cardController.create);
+app.put("/api/cards/:id", cardController.update);
+app.delete("/api/cards/:id", cardController.delete);
 app.get(
   "/api/cards/disciplina/:disciplina",
   cardController.getCardsByDisciplina
 );
 
-// ROTAS FOLDER
-app.get("/api/folders", folderController.getAllFolders);
-app.get("/api/folders/:id", folderController.getFolderById);
-app.post("/api/folders", folderController.createFolder);
-app.put("/api/folders/:id", folderController.updateFolder);
-app.delete("/api/folders/:id", folderController.deleteFolder);
+// ROTAS FOLDERS
+app.get("/api/folders", folderController.getAll);
+app.get("/api/folders/:id", folderController.getById);
+app.post("/api/folders", folderController.create);
+app.put("/api/folders/:id", folderController.update);
+app.delete("/api/folders/:id", folderController.delete);
 
 // ROTAS SUMMARIES
-app.get("/api/summaries", summaryController.getAllSummaries);
-app.get("/api/summaries/:id", summaryController.getSummaryById);
-app.post("/api/summaries", summaryController.createSummary);
-app.put("/api/summaries/:id", summaryController.updateSummary);
-app.delete("/api/summaries/:id", summaryController.deleteSummary);
+app.get("/api/summaries", summaryController.getAll);
+app.get("/api/summaries/:id", summaryController.getById);
+app.post("/api/summaries", summaryController.create);
+app.put("/api/summaries/:id", summaryController.update);
+app.delete("/api/summaries/:id", summaryController.delete);
 
 const PORT = process.env.PORT || 3000;
 
