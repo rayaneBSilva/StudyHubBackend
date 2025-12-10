@@ -1,4 +1,4 @@
-[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/c33c52a0-00a8-4f89-b84e-1f6adaedd576)# StudyHub - Backend
+# StudyHub - Backend
 
 **StudyHub** é uma plataforma colaborativa voltada para estudantes, que permite criar, salvar e compartilhar **cards de estudo**, **trabalhos acadêmicos** e **pastas de materiais** com outros usuários.
 
@@ -84,7 +84,7 @@ Para facilitar os testes da API, você pode importar o workspace do Insomnia:
 5. Agora você terá todas as rotas prontas para teste.
 
 ## Video demonstrando como executar o projeto
-[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/a5deee20-7810-4bcf-9ef5-17c9f96eb1ea)
+[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/c33c52a0-00a8-4f89-b84e-1f6adaedd576)
 
 
 
