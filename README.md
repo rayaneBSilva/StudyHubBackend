@@ -84,7 +84,9 @@ Para facilitar os testes da API, você pode importar o workspace do Insomnia:
 5. Agora você terá todas as rotas prontas para teste.
 
 ## Video demonstrando como executar o projeto
-[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/c33c52a0-00a8-4f89-b84e-1f6adaedd576)
+
+[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/39bc84da-ef8f-4578-a850-0cc0ee93f9d3)
+
 
 
 
