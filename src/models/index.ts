@@ -7,26 +7,22 @@ import sequelize from "../config/database";
 // Um usuário pode ter vários cards
 User.hasMany(Card, {
   foreignKey: "autor_id",
-  as: "cards"
+  as: "cards",
 });
 
 // Cada card pertence a um usuário
 Card.belongsTo(User, {
   foreignKey: "autor_id",
-  as: "autor"
+  as: "autor",
 });
 
 // Exportar todos os modelos e a instância do sequelize
-export {
-  User,
-  Card,
-  sequelize
-};
+export { User, Card, sequelize };
 
 // Função para sincronizar modelos com o banco (usar apenas em desenvolvimento)
 export const syncDatabase = async (force = false) => {
   try {
-    await sequelize.sync({ force });
+    await sequelize.sync();
     console.log("✅ Modelos sincronizados com o banco de dados");
   } catch (error) {
     console.error("❌ Erro ao sincronizar modelos:", error);
