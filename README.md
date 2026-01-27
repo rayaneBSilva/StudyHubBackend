@@ -66,9 +66,28 @@ StudyhubBackend/
    ```
 3. Rode o servidor:
    ```bash
-   npm run start
+   npm run dev
    ```
 5. Acesse no navegador:
   ```arduino
    http://localhost:3000
    ```
+
+## Testando a API no Insomnia
+
+Para facilitar os testes da API, você pode importar o workspace do Insomnia:
+
+1. Baixe o arquivo `docs/insomnia/StudyHubBackend-Insomnia.json`.
+2. Abra o Insomnia.
+3. Vá em **Workspace → Import/Export → Import Data → From File**.
+4. Selecione o arquivo JSON baixado.
+5. Agora você terá todas as rotas prontas para teste.
+
+## Video demonstrando como executar o projeto
+
+[coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/39bc84da-ef8f-4578-a850-0cc0ee93f9d3)
+
+
+
+
+
