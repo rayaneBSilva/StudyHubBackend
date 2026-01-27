@@ -1,6 +1,7 @@
 import { BaseService } from "./BaseService";
 import { UserRepository } from "../repository/UserRepository";
 import { UserAttributes, UserCreationAttributes } from "../models/User";
+import { hashPassword, comparePassword, generateToken } from "../utils/auth";
 
 export class UserService extends BaseService<
   UserRepository,
@@ -14,13 +15,13 @@ export class UserService extends BaseService<
   async createUser(data: UserCreationAttributes) {
     if (!data.name?.trim()) throw new Error("Nome é obrigatório");
     if (!data.email?.trim()) throw new Error("Email é obrigatório");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-      throw new Error("Email inválido");
     if (!data.password || data.password.length < 6)
       throw new Error("Senha deve ter pelo menos 6 caracteres");
 
     const exists = await this.repository.emailExists(data.email);
     if (exists) throw new Error("Email já está em uso");
+
+    data.password = await hashPassword(data.password);
 
     return this.create(data);
   }
@@ -43,8 +44,18 @@ export class UserService extends BaseService<
 
   async loginUser(email: string, password: string) {
     const user = await this.repository.findByEmail(email);
-    if (!user || user.password !== password)
-      throw new Error("Email ou senha inválidos");
-    return user;
+    if (!user) throw new Error("Email ou senha inválidos");
+
+    const valid = await comparePassword(password, user.password);
+    if (!valid) throw new Error("Email ou senha inválidos");
+
+    const token = generateToken(user);
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token,
+    };
   }
 }
