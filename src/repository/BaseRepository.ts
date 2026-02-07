@@ -7,6 +7,20 @@ export abstract class BaseRepository<M extends Model, Attr, CreateAttr> {
     return this.model.findAll();
   }
 
+  async findAllPaginated(page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await this.model.findAndCountAll({
+      limit,
+      offset,
+    });
+
+    return {
+      data: rows,
+      total: count,
+    };
+  }
+
   async findById(id: number): Promise<M | null> {
     return this.model.findByPk(id);
   }

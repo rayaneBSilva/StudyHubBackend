@@ -1,7 +1,7 @@
 export class BaseService<
-  R extends { create: (data: any) => any },
+  R extends { findAllPaginated: Function },
   Attr,
-  CreateAttr = Attr
+  CreateAttr = Attr,
 > {
   protected repository: R;
 
@@ -9,9 +9,8 @@ export class BaseService<
     this.repository = repository;
   }
 
-  async getAll(): Promise<Attr[]> {
-    // @ts-ignore
-    return await this.repository.findAll();
+  async getAllPaginated(page = 1, limit = 10) {
+    return this.repository.findAllPaginated(page, limit);
   }
 
   async getById(id: number): Promise<Attr> {

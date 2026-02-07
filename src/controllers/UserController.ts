@@ -43,4 +43,28 @@ export class UserController extends BaseController<UserService> {
       });
     }
   };
+
+  getAll = async (
+    req: Request & { user?: any },
+    res: Response,
+  ): Promise<void> => {
+    if (req.user?.role !== "teacher") {
+      res.status(403).json({
+        message: "Apenas professores podem listar usuários",
+      });
+      return;
+    }
+
+    const { name, email } = req.query;
+
+    const users = await this.service.filterUsers({
+      name: name as string,
+      email: email as string,
+    });
+
+    res.json({
+      success: true,
+      data: users,
+    });
+  };
 }

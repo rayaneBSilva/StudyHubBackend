@@ -58,4 +58,8 @@ export class UserService extends BaseService<
       token,
     };
   }
+
+  async filterUsers(filters: { name?: string; email?: string }) {
+    return this.repository.findFiltered(filters);
+  }
 }

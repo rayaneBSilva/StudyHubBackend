@@ -6,6 +6,7 @@ import { CardController } from "./controllers/CardController";
 import { FolderController } from "./controllers/FolderController";
 import { SummaryController } from "./controllers/SummaryController";
 import { authenticate } from "./middlewares/authMiddleware";
+import { onlyTeacher } from "./middlewares/roleMiddleware";
 
 dotenv.config();
 
@@ -30,9 +31,8 @@ app.put("/api/users/:id", authenticate, userController.update);
 app.delete("/api/users/:id", authenticate, userController.delete);
 
 // ROTAS CARDS
-app.get("/api/cards", authenticate, cardController.getAll);
+app.post("/api/cards", authenticate, onlyTeacher, cardController.create);
 app.get("/api/cards/:id", authenticate, cardController.getById);
-app.post("/api/cards", authenticate, cardController.create);
 app.put("/api/cards/:id", authenticate, cardController.update);
 app.delete("/api/cards/:id", authenticate, cardController.delete);
 app.get(
