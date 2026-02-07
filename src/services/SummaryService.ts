@@ -25,4 +25,8 @@ export class SummaryService extends BaseService<
   async getSummariesByDisciplina(disciplina: string) {
     return this.repository.findByDisciplina(disciplina);
   }
+
+  async getAllFiltered(filters: any, page: number, limit: number) {
+    return this.repository.findPaginatedAndFiltered(filters, page, limit);
+  }
 }
