@@ -124,6 +124,30 @@ npm test
 
 ---
 
+## ▶️ Executando a Cobertura de Testes
+
+Para executar os testes e gerar o relatório de cobertura, utilize o comando:
+
+```bash
+npm run coverage
+```
+Esse comando:
+
+- Executa todos os testes automatizados do projeto
+- Mede a execução do código durante os testes
+- Exibe um relatório resumido no terminal
+- Gera um relatório detalhado em HTML
+
+Após a execução dos testes, será criada a pasta: coverage/
+Dentro dela, o arquivo principal é: coverage/index.html
+
+Para abrir o relatório visual no Firefox, utilize o comando:
+
+```bash
+firefox coverage/index.html
+```
+
+
 ## 🧪 Testando a API no Insomnia
 
 Para facilitar os testes da API, você pode importar o workspace do Insomnia:
