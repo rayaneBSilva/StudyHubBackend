@@ -21,4 +21,8 @@ export class FolderService extends BaseService<
   async getFoldersByAutor(autor_id: number) {
     return this.repository.findByAutor(autor_id);
   }
+
+  async getAllFiltered(filters: any, page: number, limit: number) {
+    return this.repository.findPaginatedAndFiltered(filters, page, limit);
+  }
 }
