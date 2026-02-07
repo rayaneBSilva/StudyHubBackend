@@ -1,5 +1,6 @@
 import { BaseRepository } from "./BaseRepository";
 import { Card, CardAttributes, CardCreationAttributes } from "../models/Card";
+import { Op } from "sequelize";
 
 export class CardRepository extends BaseRepository<
   Card,
@@ -14,5 +15,35 @@ export class CardRepository extends BaseRepository<
 
   async findByAutor(autor_id: number): Promise<Card[]> {
     return Card.findAll({ where: { autor_id } });
+  }
+
+  async findPaginatedAndFiltered(
+    filters: {
+      titulo?: string;
+      disciplina?: string;
+      autor_id?: number;
+    },
+    page: number,
+    limit: number,
+  ) {
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Card.findAndCountAll({
+      where: {
+        ...(filters.titulo && {
+          titulo: { [Op.like]: `%${filters.titulo}%` },
+        }),
+        ...(filters.disciplina && {
+          disciplina: filters.disciplina,
+        }),
+        ...(filters.autor_id && {
+          autor_id: filters.autor_id,
+        }),
+      },
+      limit,
+      offset,
+    });
+
+    return { data: rows, total: count };
   }
 }

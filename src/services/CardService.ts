@@ -35,4 +35,8 @@ export class CardService extends BaseService<
       throw new Error("Erro ao buscar cards do autor");
     }
   }
+
+  async getAllFiltered(filters: any, page: number, limit: number) {
+    return this.repository.findPaginatedAndFiltered(filters, page, limit);
+  }
 }
