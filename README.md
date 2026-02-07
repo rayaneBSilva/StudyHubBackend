@@ -1,59 +1,89 @@
 # StudyHub - Backend
 
-**StudyHub** é uma plataforma colaborativa voltada para estudantes, que permite criar, salvar e compartilhar **cards de estudo**, **trabalhos acadêmicos** e **pastas de materiais** com outros usuários.
-
-Este repositório contém o **servidor backend**, responsável por gerenciar a lógica de negócios, autenticação, e integração com o banco de dados.
+**StudyHub** é uma plataforma colaborativa voltada para estudantes, permitindo criar, organizar e compartilhar **cards de estudo**, **pastas** e **resumos acadêmicos**.  
+Este repositório contém o **backend**, responsável pela autenticação, regras de negócio, persistência de dados e testes automatizados.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
 - **Node.js** — Ambiente de execução JavaScript
+- **TypeScript**
 - **Express.js** — Framework web para criação de APIs
 - **PostgreSQL**— Banco de dados relacional
+- **Sequelize (ORM)**
+- **JWT** — Autenticação
+- **Mocha + Chai** — Testes automatizados
+- **Supertest** — Testes de API
+- **Insomnia** — Testes manuais
 - **Swagger** — Documentação da API
 
 ---
 
 ## ⚙️ Funcionalidades Principais
 
-- Cadastro e autenticação de usuários
-- Criação e gerenciamento de cards de estudo
-- Criação, edição e compartilhamento de pastas
-- Busca e filtro de conteúdos por tema ou disciplina
-- Criação, edição e compartilhamento de resumos entre usuários
+### 👤 Usuários
+- Cadastro
+- Login com JWT
+- Diferenciação de papéis:
+  - **Professor** (usuário principal)
+  - **Aluno**
+- Logout (via expiração de token)
+
+### 📚 Conteúdo
+- Cards de estudo
+- Pastas organizadoras
+- Resumos acadêmicos
+
+### 🔒 Regras de Acesso
+- Apenas **professores** podem criar/editar conteúdos
+- Alunos apenas visualizam
+- Todas as rotas protegidas por autenticação
+
+### 🔎 Recursos Avançados
+- Filtragem por título, disciplina e autor
+- Paginação (`page` e `limit`)
+- Busca textual
 
 ---
 
 ## 🧩 Estrutura do Projeto
 
-StudyhubBackend/
-
+```
+StudyHubBackend/
 ├── src/
-
-│ ├── controllers/
-
-│ ├── models/
-
-│ ├── routes/
-
-│ ├── services/
-
-│ └── config/
-
+│   ├── app.ts
+│   ├── index.ts
+│   ├── controllers/
+│   ├── services/
+│   ├── models/
+│   ├── repository/
+│   ├── middlewares/
+│   ├── utils/
+│   └── config/
+│
 ├── tests/
-
+│   ├── auth/
+│   ├── users/
+│   ├── cards/
+│   ├── folders/
+│   ├── summaries/
+│   ├── helpers/
+│   └── setup.ts
+│
+├── docs/
+│   └── insomnia/
+│
 ├── public/
-
-│ └── index.html
-
-├── server.js
-
-└── package.json
+├── tsconfig.json
+├── tsconfig.test.json
+├── package.json
+└── README.md
+```
 
 ---
 
-## Como Executar o Projeto
+## ▶️ Executando o Projeto
 
 1. **Clone o repositório:**
    ```bash
@@ -73,7 +103,28 @@ StudyhubBackend/
    http://localhost:3000
    ```
 
-## Testando a API no Insomnia
+---
+
+## 🧪 Testes Automatizados
+
+### Executar testes
+```bash
+cd tests
+npm test
+```
+
+### Tipos de Testes Implementados
+- Autenticação
+- Autorização por papel
+- CRUD de usuários
+- CRUD de cards
+- CRUD de pastas
+- CRUD de resumos
+- Testes de segurança (token ausente / inválido)
+
+---
+
+## 🧪 Testando a API no Insomnia
 
 Para facilitar os testes da API, você pode importar o workspace do Insomnia:
 
