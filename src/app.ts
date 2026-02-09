@@ -33,6 +33,7 @@ app.get(
   authenticate,
   cardController.getCardsByDisciplina,
 );
+app.get("/api/cards", authenticate, cardController.getAll);
 
 // FOLDERS
 app.get("/api/folders", authenticate, folderController.getAll);
