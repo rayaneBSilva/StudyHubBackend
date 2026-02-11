@@ -162,6 +162,10 @@ Para facilitar os testes da API, você pode importar o workspace do Insomnia:
 
 [coleta_evidências_1_entrega.webm](https://github.com/user-attachments/assets/39bc84da-ef8f-4578-a850-0cc0ee93f9d3)
 
+## Evidência do upload de um arquivo:
+
+[Evidencia_upload.webm](https://github.com/user-attachments/assets/37c21ce5-b818-40b9-bae7-f0025cb98896)
+
 
 
 
