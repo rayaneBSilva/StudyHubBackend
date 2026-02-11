@@ -7,6 +7,26 @@ export class CardController extends BaseController<CardService> {
     super(new CardService());
   }
 
+  create = async (req: Request & { user?: any }, res: Response) => {
+    try {
+      const card = await this.service.createCard(
+        { ...req.body, autor_id: req.user.id },
+        req.user.role,
+      );
+
+      res.status(201).json({
+        success: true,
+        data: card,
+        message: "Card criado com sucesso",
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: (error as Error).message,
+      });
+    }
+  };
+
   getCardsByDisciplina = async (req: Request, res: Response) => {
     try {
       const disciplinaParam = req.params.disciplina;
@@ -68,5 +88,36 @@ export class CardController extends BaseController<CardService> {
       limit,
       totalPages: Math.ceil(result.total / limit),
     });
+  };
+
+  listPending = async (_: Request, res: Response) => {
+    const cards = await this.service.listPending();
+    res.json({ success: true, data: cards });
+  };
+
+  approve = async (req: Request & { user?: any }, res: Response) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+
+    const card = await this.service.approveCard(
+      Number(id),
+      req.user.id,
+      comment,
+    );
+
+    res.json({ success: true, data: card });
+  };
+
+  reject = async (req: Request & { user?: any }, res: Response) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+
+    if (!reason) {
+      return res.status(400).json({ message: "Motivo obrigatório" });
+    }
+
+    const card = await this.service.rejectCard(Number(id), req.user.id, reason);
+
+    res.json({ success: true, data: card });
   };
 }

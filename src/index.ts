@@ -7,7 +7,8 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 sequelize
-  .sync({ force: true }) // cuidado em produção
+  // .sync({ force: true }) // cuidado em produção
+  .sync()
   .then(() => {
     console.log("Banco de dados conectado!");
     app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

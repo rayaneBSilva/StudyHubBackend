@@ -39,4 +39,9 @@ export class FolderRepository extends BaseRepository<
 
     return { data: rows, total: count };
   }
+
+  async exists(nome: string) {
+    const folder = await Folder.findOne({ where: { nome } });
+    return !!folder;
+  }
 }

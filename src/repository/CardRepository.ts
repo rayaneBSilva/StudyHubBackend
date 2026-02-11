@@ -46,4 +46,17 @@ export class CardRepository extends BaseRepository<
 
     return { data: rows, total: count };
   }
+
+  findPending() {
+    return Card.findAll({ where: { status: "PENDING" } });
+  }
+
+  findApproved(filters: any) {
+    return Card.findAll({
+      where: {
+        status: "APPROVED",
+        ...(filters.disciplina && { disciplina: filters.disciplina }),
+      },
+    });
+  }
 }

@@ -7,10 +7,13 @@ export interface SummaryAttributes {
   conteudo: string;
   disciplina: string;
   autor_id: number;
+  pdf_path?: string;
 }
 
-export interface SummaryCreationAttributes
-  extends Optional<SummaryAttributes, "id"> {}
+export interface SummaryCreationAttributes extends Optional<
+  SummaryAttributes,
+  "id" | "pdf_path"
+> {}
 
 export class Summary
   extends Model<SummaryAttributes, SummaryCreationAttributes>
@@ -34,6 +37,8 @@ Summary.init(
       allowNull: false,
       references: { model: "users", key: "id" },
     },
+    pdf_path: { type: DataTypes.STRING, allowNull: true },
   },
-  { sequelize, tableName: "summaries", timestamps: false }
+
+  { sequelize, tableName: "summaries", timestamps: false },
 );
