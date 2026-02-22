@@ -31,13 +31,21 @@ export class DeckController {
     }
   };
 
-  update = async (req: Request, res: Response) => {
+update = async (req: Request, res: Response) => {
+  try {
     const deck = await this.service.updateDeck(Number(req.params.id), req.body);
     res.json({ success: true, data: deck });
-  };
+  } catch (e: any) {
+    res.status(404).json({ success: false, message: e.message });
+  }
+};
 
-  delete = async (req: Request, res: Response) => {
+delete = async (req: Request, res: Response) => {
+  try {
     await this.service.deleteDeck(Number(req.params.id));
     res.json({ success: true });
-  };
+  } catch (e: any) {
+    res.status(404).json({ success: false, message: e.message });
+  }
+};
 }

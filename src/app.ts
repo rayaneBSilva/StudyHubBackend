@@ -64,9 +64,13 @@ app.put("/api/decks/:id", authenticate, deckController.update);
 app.delete("/api/decks/:id", authenticate, deckController.delete);
 
 /* ------------------ STUDY ------------------ */
-app.get("/api/study/:deckId", authenticate, cardController.getCardsToStudy);
-app.post("/api/study/:cardId/review", authenticate, cardController.review);
+app.get(
+  "/api/cards/study/:deckId",
+  authenticate,
+  cardController.getCardsToStudy,
+);
 
+app.patch("/api/cards/review/:cardId", authenticate, cardController.review);
 // ------------------ FOLDERS ------------------
 app.get("/api/folders", authenticate, folderController.getAll);
 app.get("/api/folders/:id", authenticate, folderController.getById);
@@ -78,7 +82,7 @@ app.delete("/api/folders/:id", authenticate, folderController.delete);
 app.get("/api/summaries", authenticate, summaryController.getAll);
 app.get("/api/summaries/:id", authenticate, summaryController.getById);
 app.post(
-  "/api/summaries/upload",
+  "/api/summaries",
   authenticate,
   upload.single("pdf"),
   async (req, res) => {
@@ -88,9 +92,10 @@ app.post(
       const autor_id = authReq.user.id;
 
       if (!authReq.file) {
-        return res
-          .status(400)
-          .json({ success: false, message: "PDF obrigatório" });
+        return res.status(400).json({
+          success: false,
+          message: "PDF obrigatório",
+        });
       }
 
       const resumo = await summaryService.createSummary({
@@ -100,11 +105,15 @@ app.post(
         autor_id,
       });
 
-      res.json({ success: true, data: resumo });
+      res.status(201).json({
+        success: true,
+        data: resumo,
+      });
     } catch (error) {
-      res
-        .status(500)
-        .json({ success: false, message: (error as Error).message });
+      res.status(400).json({
+        success: false,
+        message: (error as Error).message,
+      });
     }
   },
 );
@@ -114,14 +123,14 @@ app.delete("/api/summaries/:id", authenticate, summaryController.delete);
 
 // ------------------ REVISÃO (SOMENTE PROFESSOR) ------------------
 app.patch(
-  "/api/review/cards/:id/approve",
+  "/api/cards/:id/approve",
   authenticate,
   onlyTeacher,
   cardController.approve,
 );
 
 app.patch(
-  "/api/review/cards/:id/reject",
+  "/api/cards/:id/reject",
   authenticate,
   onlyTeacher,
   cardController.reject,

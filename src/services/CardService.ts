@@ -92,7 +92,7 @@ export class CardService {
     const card = await Card.findByPk(cardId);
     if (!card) throw new Error("Card não encontrado");
 
-    if (quality < 0 || quality > 5)
+    if (typeof quality !== "number" || quality < 0 || quality > 5)
       throw new Error("Qualidade deve ser entre 0 e 5");
 
     this.calculateSM2(card, quality);

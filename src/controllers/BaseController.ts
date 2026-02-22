@@ -17,12 +17,10 @@ export abstract class BaseController<S, CreateDto = any, UpdateDto = any> {
         message: "Listagem realizada com sucesso",
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: (error as Error).message || "Erro interno",
-        });
+      res.status(500).json({
+        success: false,
+        message: (error as Error).message || "Erro interno",
+      });
     }
   };
 

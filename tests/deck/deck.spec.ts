@@ -4,57 +4,57 @@ import app from "../../src/app";
 
 let teacherToken: string;
 let studentToken: string;
-let createdFolderId: number;
+let createdDeckId: number;
 
-describe("Folder API", () => {
+describe("Deck API", () => {
   before(async () => {
     await request(app).post("/api/users").send({
-      name: "FolderTeacher",
-      email: "folderteacher@email.com",
+      name: "DeckTeacher",
+      email: "deckteacher@email.com",
       password: "123456",
       role: "teacher",
     });
 
     const teacherLogin = await request(app).post("/api/users/login").send({
-      email: "folderteacher@email.com",
+      email: "deckteacher@email.com",
       password: "123456",
     });
 
     teacherToken = teacherLogin.body.data.token;
 
     await request(app).post("/api/users").send({
-      name: "FolderStudent",
-      email: "folderstudent@email.com",
+      name: "DeckStudent",
+      email: "deckstudent@email.com",
       password: "123456",
       role: "student",
     });
 
     const studentLogin = await request(app).post("/api/users/login").send({
-      email: "folderstudent@email.com",
+      email: "deckstudent@email.com",
       password: "123456",
     });
 
     studentToken = studentLogin.body.data.token;
   });
 
-  it("deve criar pasta com sucesso", async () => {
+  it("deve criar deck com sucesso", async () => {
     const res = await request(app)
-      .post("/api/folders")
+      .post("/api/decks")
       .set("Authorization", `Bearer ${teacherToken}`)
       .send({
-        nome: "Pasta Teste",
-        descricao: "Descrição da pasta",
+        nome: "Deck Teste",
+        descricao: "Descrição teste",
       });
 
     expect(res.status).to.equal(201);
     expect(res.body.success).to.be.true;
 
-    createdFolderId = res.body.data.id;
+    createdDeckId = res.body.data.id;
   });
 
-  it("não deve criar pasta sem nome", async () => {
+  it("não deve criar deck sem nome", async () => {
     const res = await request(app)
-      .post("/api/folders")
+      .post("/api/decks")
       .set("Authorization", `Bearer ${teacherToken}`)
       .send({
         descricao: "Sem nome",
@@ -63,82 +63,59 @@ describe("Folder API", () => {
     expect(res.status).to.equal(400);
   });
 
-  it("não deve criar pasta sem token", async () => {
-    const res = await request(app).post("/api/folders").send({
-      nome: "Sem token",
+  it("não deve criar deck sem token", async () => {
+    const res = await request(app).post("/api/decks").send({
+      nome: "Sem Token",
     });
 
     expect(res.status).to.equal(401);
   });
 
-  // =========================
-  // GET ALL + PAGINATION
-  // =========================
-
-  it("deve listar pastas paginadas", async () => {
+  it("deve listar decks autenticado", async () => {
     const res = await request(app)
-      .get("/api/folders?page=1&limit=5")
+      .get("/api/decks")
       .set("Authorization", `Bearer ${teacherToken}`);
 
     expect(res.status).to.equal(200);
     expect(res.body.data).to.be.an("array");
-    expect(res.body).to.have.property("total");
-    expect(res.body).to.have.property("totalPages");
   });
 
-  it("deve filtrar pastas por nome", async () => {
-    const res = await request(app)
-      .get("/api/folders?nome=Pasta")
-      .set("Authorization", `Bearer ${teacherToken}`);
-
-    expect(res.status).to.equal(200);
-    expect(res.body.data.length).to.be.greaterThan(0);
-  });
-
-  it("deve filtrar pastas por autor_id", async () => {
-    const res = await request(app)
-      .get("/api/folders?autor_id=1")
-      .set("Authorization", `Bearer ${teacherToken}`);
-
-    expect(res.status).to.equal(200);
-  });
-
-  it("não deve listar pastas sem token", async () => {
-    const res = await request(app).get("/api/folders");
+  it("não deve listar decks sem token", async () => {
+    const res = await request(app).get("/api/decks");
     expect(res.status).to.equal(401);
   });
 
-  it("deve buscar pasta por id", async () => {
+  it("deve buscar deck por id", async () => {
     const res = await request(app)
-      .get(`/api/folders/${createdFolderId}`)
+      .get(`/api/decks/${createdDeckId}`)
       .set("Authorization", `Bearer ${teacherToken}`);
 
     expect(res.status).to.equal(200);
-    expect(res.body.data.id).to.equal(createdFolderId);
+    expect(res.body.data.id).to.equal(createdDeckId);
   });
 
-  it("não deve buscar pasta inexistente", async () => {
+  it("não deve buscar deck inexistente", async () => {
     const res = await request(app)
-      .get("/api/folders/999999")
+      .get("/api/decks/999999")
       .set("Authorization", `Bearer ${teacherToken}`);
 
     expect(res.status).to.equal(404);
   });
 
-  it("deve atualizar pasta", async () => {
+  it("deve atualizar nome do deck", async () => {
     const res = await request(app)
-      .put(`/api/folders/${createdFolderId}`)
+      .put(`/api/decks/${createdDeckId}`)
       .set("Authorization", `Bearer ${teacherToken}`)
       .send({
-        nome: "Pasta Atualizada",
+        nome: "Deck Atualizado",
       });
 
     expect(res.status).to.equal(200);
   });
 
-  it("deve atualizar descrição da pasta", async () => {
+  it("deve atualizar descrição do deck", async () => {
     const res = await request(app)
-      .put(`/api/folders/${createdFolderId}`)
+      .put(`/api/decks/${createdDeckId}`)
       .set("Authorization", `Bearer ${teacherToken}`)
       .send({
         descricao: "Nova descrição",
@@ -147,9 +124,9 @@ describe("Folder API", () => {
     expect(res.status).to.equal(200);
   });
 
-  it("não deve atualizar pasta inexistente", async () => {
+  it("não deve atualizar deck inexistente", async () => {
     const res = await request(app)
-      .put("/api/folders/999999")
+      .put("/api/decks/999999")
       .set("Authorization", `Bearer ${teacherToken}`)
       .send({
         nome: "Inexistente",
@@ -158,17 +135,17 @@ describe("Folder API", () => {
     expect(res.status).to.equal(404);
   });
 
-  it("deve deletar pasta", async () => {
+  it("deve deletar deck", async () => {
     const res = await request(app)
-      .delete(`/api/folders/${createdFolderId}`)
+      .delete(`/api/decks/${createdDeckId}`)
       .set("Authorization", `Bearer ${teacherToken}`);
 
     expect(res.status).to.equal(200);
   });
 
-  it("não deve deletar pasta inexistente", async () => {
+  it("não deve deletar deck inexistente", async () => {
     const res = await request(app)
-      .delete("/api/folders/999999")
+      .delete("/api/decks/999999")
       .set("Authorization", `Bearer ${teacherToken}`);
 
     expect(res.status).to.equal(404);

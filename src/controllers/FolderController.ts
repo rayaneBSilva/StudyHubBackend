@@ -7,6 +7,25 @@ export class FolderController extends BaseController<FolderService> {
     super(new FolderService());
   }
 
+  create = async (req: any, res: Response) => {
+    try {
+      const folder = await this.service.createFolder({
+        ...req.body,
+        autor_id: req.user.id,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: folder,
+      });
+    } catch (e: any) {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
+    }
+  };
+
   getAll = async (req: Request, res: Response) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
