@@ -7,11 +7,11 @@ import { UserController } from "./controllers/UserController";
 import { CardController } from "./controllers/CardController";
 import { FolderController } from "./controllers/FolderController";
 import { SummaryController } from "./controllers/SummaryController";
-import { ReviewController } from "./controllers/ReviewController";
 import { authenticate } from "./middlewares/authMiddleware";
 import { onlyTeacher } from "./middlewares/roleMiddleware";
 import { AuthenticatedRequest } from "../types/express";
 import { SummaryService } from "./services/SummaryService";
+import { DeckController } from "./controllers/DeckController";
 
 const app = express();
 app.use(express.json());
@@ -41,8 +41,8 @@ const userController = new UserController();
 const cardController = new CardController();
 const folderController = new FolderController();
 const summaryController = new SummaryController();
-const reviewController = new ReviewController();
 const summaryService = new SummaryService();
+const deckController = new DeckController();
 
 // ------------------ USERS ------------------
 app.post("/api/users", userController.create);
@@ -55,15 +55,17 @@ app.delete("/api/users/:id", authenticate, userController.delete);
 
 // ------------------ CARDS ------------------
 app.post("/api/cards", authenticate, cardController.create);
-app.get("/api/cards/:id", authenticate, cardController.getById);
-app.put("/api/cards/:id", authenticate, cardController.update);
-app.delete("/api/cards/:id", authenticate, cardController.delete);
-app.get(
-  "/api/cards/disciplina/:disciplina",
-  authenticate,
-  cardController.getCardsByDisciplina,
-);
-app.get("/api/cards", authenticate, cardController.getAll);
+
+/* ------------------ DECKS ------------------ */
+app.post("/api/decks", authenticate, deckController.create);
+app.get("/api/decks", authenticate, deckController.getAll);
+app.get("/api/decks/:id", authenticate, deckController.getById);
+app.put("/api/decks/:id", authenticate, deckController.update);
+app.delete("/api/decks/:id", authenticate, deckController.delete);
+
+/* ------------------ STUDY ------------------ */
+app.get("/api/study/:deckId", authenticate, cardController.getCardsToStudy);
+app.post("/api/study/:cardId/review", authenticate, cardController.review);
 
 // ------------------ FOLDERS ------------------
 app.get("/api/folders", authenticate, folderController.getAll);
@@ -111,23 +113,18 @@ app.put("/api/summaries/:id", authenticate, summaryController.update);
 app.delete("/api/summaries/:id", authenticate, summaryController.delete);
 
 // ------------------ REVISÃO (SOMENTE PROFESSOR) ------------------
-app.get(
-  "/api/review/cards",
-  authenticate,
-  onlyTeacher,
-  reviewController.listPending,
-);
 app.patch(
   "/api/review/cards/:id/approve",
   authenticate,
   onlyTeacher,
-  reviewController.approve,
+  cardController.approve,
 );
+
 app.patch(
   "/api/review/cards/:id/reject",
   authenticate,
   onlyTeacher,
-  reviewController.reject,
+  cardController.reject,
 );
 
 export default app;

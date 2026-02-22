@@ -9,54 +9,52 @@ export class CardRepository extends BaseRepository<
 > {
   protected model = Card;
 
-  async findByDisciplina(disciplina: string): Promise<Card[]> {
-    return Card.findAll({ where: { disciplina } });
-  }
-
   async findByAutor(autor_id: number): Promise<Card[]> {
-    return Card.findAll({ where: { autor_id } });
+    return this.model.findAll({ where: { autor_id } });
   }
 
-  async findPaginatedAndFiltered(
-    filters: {
-      titulo?: string;
-      disciplina?: string;
-      autor_id?: number;
-    },
-    page: number,
-    limit: number,
-  ) {
+  async findByDeck(deck_id: number): Promise<Card[]> {
+    return this.model.findAll({ where: { deck_id } });
+  }
+
+  async findPending(): Promise<Card[]> {
+    return this.model.findAll({
+      where: { status: "PENDING" },
+    });
+  }
+
+  async findApprovedByDeck(deck_id: number): Promise<Card[]> {
+    return this.model.findAll({
+      where: {
+        deck_id,
+        status: "APPROVED",
+      },
+    });
+  }
+
+  async findCardsToStudy(userId: number, deckId: number) {
+    return this.model.findAll({
+      where: {
+        autor_id: userId,
+        deck_id: deckId,
+        status: "APPROVED",
+        next_review: {
+          [Op.lte]: new Date(),
+        },
+      },
+      order: [["next_review", "ASC"]],
+    });
+  }
+
+  async findPaginatedByDeck(deck_id: number, page: number, limit: number) {
     const offset = (page - 1) * limit;
 
-    const { rows, count } = await Card.findAndCountAll({
-      where: {
-        ...(filters.titulo && {
-          titulo: { [Op.like]: `%${filters.titulo}%` },
-        }),
-        ...(filters.disciplina && {
-          disciplina: filters.disciplina,
-        }),
-        ...(filters.autor_id && {
-          autor_id: filters.autor_id,
-        }),
-      },
+    const { rows, count } = await this.model.findAndCountAll({
+      where: { deck_id },
       limit,
       offset,
     });
 
     return { data: rows, total: count };
-  }
-
-  findPending() {
-    return Card.findAll({ where: { status: "PENDING" } });
-  }
-
-  findApproved(filters: any) {
-    return Card.findAll({
-      where: {
-        status: "APPROVED",
-        ...(filters.disciplina && { disciplina: filters.disciplina }),
-      },
-    });
   }
 }

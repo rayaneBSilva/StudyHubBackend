@@ -1,16 +1,21 @@
-import { CardService } from "../services/CardService";
-import { BaseController } from "./BaseController";
 import { Request, Response } from "express";
+import { CardService } from "../services/CardService";
 
-export class CardController extends BaseController<CardService> {
-  constructor() {
-    super(new CardService());
-  }
+export class CardController {
+  private service = new CardService();
 
-  create = async (req: Request & { user?: any }, res: Response) => {
+  /* =========================
+     CRIAR CARD
+     Aluno → PENDING
+     Professor → APPROVED
+  ========================== */
+  create = async (req: any, res: Response) => {
     try {
       const card = await this.service.createCard(
-        { ...req.body, autor_id: req.user.id },
+        {
+          ...req.body,
+          autor_id: req.user.id,
+        },
         req.user.role,
       );
 
@@ -19,105 +24,119 @@ export class CardController extends BaseController<CardService> {
         data: card,
         message: "Card criado com sucesso",
       });
-    } catch (error) {
+    } catch (e: any) {
       res.status(400).json({
         success: false,
-        message: (error as Error).message,
+        message: e.message,
       });
     }
   };
 
-  getCardsByDisciplina = async (req: Request, res: Response) => {
+  /* =========================
+     PROFESSOR APROVA CARD
+  ========================== */
+  approve = async (req: any, res: Response) => {
     try {
-      const disciplinaParam = req.params.disciplina;
+      const card = await this.service.approveCard(
+        Number(req.params.id),
+        req.user.id,
+      );
 
-      if (!disciplinaParam || Array.isArray(disciplinaParam)) {
+      res.json({
+        success: true,
+        data: card,
+        message: "Card aprovado",
+      });
+    } catch (e: any) {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
+    }
+  };
+
+  /* =========================
+     PROFESSOR REJEITA CARD
+  ========================== */
+  reject = async (req: any, res: Response) => {
+    try {
+      const { reason } = req.body;
+
+      if (!reason)
         return res.status(400).json({
           success: false,
-          message: "Disciplina inválida",
+          message: "Motivo obrigatório",
         });
-      }
 
-      const cards = await this.service.getCardsByDisciplina(disciplinaParam);
+      const card = await this.service.rejectCard(
+        Number(req.params.id),
+        req.user.id,
+        reason,
+      );
+
+      res.json({
+        success: true,
+        data: card,
+        message: "Card rejeitado",
+      });
+    } catch (e: any) {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
+    }
+  };
+
+  /* =========================
+     CARDS PARA ESTUDAR
+  ========================== */
+  getCardsToStudy = async (req: any, res: Response) => {
+    try {
+      const deckId = Number(req.params.deckId);
+
+      const cards = await this.service.getCardsToStudy(req.user.id, deckId);
 
       res.json({
         success: true,
         data: cards,
-        message: `Cards da disciplina ${disciplinaParam} listados com sucesso`,
       });
-    } catch (error) {
-      res.status(500).json({
+    } catch (e: any) {
+      res.status(400).json({
         success: false,
-        message: (error as Error).message || "Erro interno",
+        message: e.message,
       });
     }
   };
 
-  getAll = async (req: Request, res: Response) => {
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
+  /* =========================
+     REVISAR CARD
+     quality: 0 a 5
+  ========================== */
+  review = async (req: Request, res: Response) => {
+    try {
+      const { quality } = req.body;
 
-    const titulo =
-      typeof req.query.titulo === "string" ? req.query.titulo : undefined;
+      if (quality === undefined)
+        return res.status(400).json({
+          success: false,
+          message: "Quality obrigatório (0 a 5)",
+        });
 
-    const disciplina =
-      typeof req.query.disciplina === "string"
-        ? req.query.disciplina
-        : undefined;
+      const card = await this.service.reviewCard(
+        Number(req.params.cardId),
+        Number(quality),
+      );
 
-    const autor_id =
-      typeof req.query.autor_id === "string"
-        ? Number(req.query.autor_id)
-        : undefined;
-
-    const result = await this.service.getAllFiltered(
-      {
-        titulo,
-        disciplina,
-        autor_id,
-      },
-      page,
-      limit,
-    );
-
-    res.json({
-      success: true,
-      data: result.data,
-      total: result.total,
-      page,
-      limit,
-      totalPages: Math.ceil(result.total / limit),
-    });
-  };
-
-  listPending = async (_: Request, res: Response) => {
-    const cards = await this.service.listPending();
-    res.json({ success: true, data: cards });
-  };
-
-  approve = async (req: Request & { user?: any }, res: Response) => {
-    const { id } = req.params;
-    const { comment } = req.body;
-
-    const card = await this.service.approveCard(
-      Number(id),
-      req.user.id,
-      comment,
-    );
-
-    res.json({ success: true, data: card });
-  };
-
-  reject = async (req: Request & { user?: any }, res: Response) => {
-    const { id } = req.params;
-    const { reason } = req.body;
-
-    if (!reason) {
-      return res.status(400).json({ message: "Motivo obrigatório" });
+      res.json({
+        success: true,
+        data: card,
+        message: "Revisão registrada",
+      });
+    } catch (e: any) {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
     }
-
-    const card = await this.service.rejectCard(Number(id), req.user.id, reason);
-
-    res.json({ success: true, data: card });
   };
 }

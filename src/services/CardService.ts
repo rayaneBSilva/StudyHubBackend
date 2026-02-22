@@ -1,90 +1,128 @@
-import { BaseService } from "./BaseService";
-import { CardRepository } from "../repository/CardRepository";
-import { FolderRepository } from "../repository/FolderRepository";
-import { CardAttributes, CardCreationAttributes } from "../models/Card";
+import { Card } from "../models/Card";
+import { DeckRepository } from "../repository/DeckRepository";
+import { Op } from "sequelize";
 
-export class CardService extends BaseService<
-  CardRepository,
-  CardAttributes,
-  CardCreationAttributes
-> {
-  private folderRepository: FolderRepository;
+export class CardService {
+  private deckRepository = new DeckRepository();
 
-  constructor() {
-    super(new CardRepository());
-    this.folderRepository = new FolderRepository(); // para validar disciplinas
+  /* =========================
+     CRIAR CARD
+  ========================== */
+  async createCard(data: any, role: string) {
+    if (!data.frente?.trim()) throw new Error("Frente obrigatória");
+    if (!data.verso?.trim()) throw new Error("Verso obrigatório");
+    if (!data.deck_id) throw new Error("Deck obrigatório");
+
+    const deck = await this.deckRepository.findById(data.deck_id);
+    if (!deck) throw new Error("Deck não existe");
+
+    const status = role === "teacher" ? "APPROVED" : "PENDING";
+
+    return Card.create({
+      ...data,
+      status,
+
+      repetitions: 0,
+      interval: 1,
+      ease_factor: 2.5,
+      next_review: new Date(), // 👈 ISSO AQUI É O MAIS IMPORTANTE
+    });
   }
 
-  async createCard(data: CardCreationAttributes, userRole: string) {
-    if (!data.titulo?.trim()) throw new Error("Título é obrigatório");
-    if (!data.conteudo?.trim()) throw new Error("Conteúdo é obrigatório");
-    if (!data.disciplina?.trim()) throw new Error("Disciplina é obrigatória");
-    if (!data.autor_id) throw new Error("Autor é obrigatório");
+  /* =========================
+     APROVAR CARD
+  ========================== */
+  async approveCard(cardId: number, teacherId: number) {
+    const card = await Card.findByPk(cardId);
+    if (!card) throw new Error("Card não encontrado");
 
-    const status = userRole === "teacher" ? "APPROVED" : "PENDING";
+    card.status = "APPROVED";
+    card.reviewed_by = teacherId;
+    card.review_reason = null as any;
 
-    return this.create({ ...data, status });
-  }
-
-  async getCardsByDisciplina(disciplina: string) {
-    try {
-      return await this.repository.findByDisciplina(disciplina);
-    } catch {
-      throw new Error("Erro ao buscar cards por disciplina");
+    if (!card.next_review) {
+      card.repetitions = 0;
+      card.interval = 1;
+      card.ease_factor = 2.5;
+      card.next_review = new Date();
     }
+
+    await card.save();
+    return card;
   }
 
-  async getCardsByAutor(autor_id: number) {
-    try {
-      return await this.repository.findByAutor(autor_id);
-    } catch {
-      throw new Error("Erro ao buscar cards do autor");
-    }
+  /* =========================
+     REJEITAR CARD
+  ========================== */
+  async rejectCard(cardId: number, teacherId: number, reason: string) {
+    if (!reason?.trim()) throw new Error("Motivo obrigatório");
+
+    const card = await Card.findByPk(cardId);
+    if (!card) throw new Error("Card não encontrado");
+
+    card.status = "REJECTED";
+    card.reviewed_by = teacherId;
+    card.review_reason = reason;
+
+    await card.save();
+    return card;
   }
 
-  async getAllFiltered(filters: any, page: number, limit: number) {
-    return this.repository.findPaginatedAndFiltered(filters, page, limit);
-  }
-
-  async listPending() {
-    try {
-      return await this.repository.findPending();
-    } catch {
-      throw new Error("Erro ao buscar cards pendentes");
-    }
-  }
-
-  async approveCard(id: number, teacherId: number, comment?: string) {
-    try {
-      return await this.repository.update(id, {
+  /* =========================
+     CARDS PARA ESTUDAR
+  ========================== */
+  async getCardsToStudy(userId: number, deckId: number) {
+    return Card.findAll({
+      where: {
+        autor_id: userId,
+        deck_id: deckId,
         status: "APPROVED",
-        reviewed_by: teacherId,
-        review_reason: comment || undefined, // undefined em vez de null para evitar TS
-      });
-    } catch {
-      throw new Error("Erro ao aprovar card");
-    }
+        next_review: {
+          [Op.lte]: new Date(),
+        },
+      },
+      order: [["next_review", "ASC"]],
+    });
   }
 
-  async rejectCard(id: number, teacherId: number, reason: string) {
-    if (!reason?.trim()) throw new Error("Motivo de rejeição é obrigatório");
+  /* =========================
+     REVISAR CARD (SM-2)
+  ========================== */
+  async reviewCard(cardId: number, quality: number) {
+    const card = await Card.findByPk(cardId);
+    if (!card) throw new Error("Card não encontrado");
 
-    try {
-      return await this.repository.update(id, {
-        status: "REJECTED",
-        reviewed_by: teacherId,
-        review_reason: reason,
-      });
-    } catch {
-      throw new Error("Erro ao rejeitar card");
-    }
+    if (quality < 0 || quality > 5)
+      throw new Error("Qualidade deve ser entre 0 e 5");
+
+    this.calculateSM2(card, quality);
+
+    await card.save();
+    return card;
   }
 
-  async listApproved(filters?: any) {
-    try {
-      return await this.repository.findApproved(filters || {});
-    } catch {
-      throw new Error("Erro ao buscar cards aprovados");
+  /* =========================
+     SM-2
+  ========================== */
+  private calculateSM2(card: any, quality: number) {
+    if (quality < 3) {
+      card.repetitions = 0;
+      card.interval = 1;
+    } else {
+      card.repetitions += 1;
+
+      if (card.repetitions === 1) card.interval = 1;
+      else if (card.repetitions === 2) card.interval = 6;
+      else card.interval = Math.round(card.interval * card.ease_factor);
     }
+
+    card.ease_factor =
+      card.ease_factor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+
+    if (card.ease_factor < 1.3) card.ease_factor = 1.3;
+
+    card.next_review = new Date(
+      Date.now() + card.interval * 24 * 60 * 60 * 1000,
+    );
   }
 }
