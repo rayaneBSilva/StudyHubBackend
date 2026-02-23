@@ -16,8 +16,16 @@ export class DeckService {
     return deck;
   }
 
-  async getAll() {
-    return this.repository.findAll();
+  async getAll({
+    page,
+    limit,
+    nome,
+  }: {
+    page?: number;
+    limit?: number;
+    nome?: string;
+  }) {
+    return this.repository.findAll({ page, limit, nome });
   }
 
   async updateDeck(id: number, data: any) {

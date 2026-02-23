@@ -1,4 +1,5 @@
 import { Deck } from "../models/Deck";
+import { Op } from "sequelize";
 
 export class DeckRepository {
   async create(data: any) {
@@ -9,8 +10,28 @@ export class DeckRepository {
     return Deck.findByPk(id);
   }
 
-  async findAll() {
-    return Deck.findAll();
+  async findAll({
+    page = 1,
+    limit = 10,
+    nome,
+  }: {
+    page?: number;
+    limit?: number;
+    nome?: string;
+  }) {
+    const offset = (page - 1) * limit;
+
+    const where: any = {};
+    if (nome) {
+      where.nome = { [Op.like]: `%${nome}%` };
+    }
+
+    return Deck.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [["id", "ASC"]],
+    });
   }
 
   async update(id: number, data: any) {
