@@ -55,16 +55,20 @@ export class UserController extends BaseController<UserService> {
       return;
     }
 
-    const { name, email } = req.query;
+    const { name, email, page = "1", limit = "10" } = req.query;
 
-    const users = await this.service.filterUsers({
-      name: name as string,
-      email: email as string,
-    });
+    const users = await this.service.filterUsers(
+      {
+        name: name as string,
+        email: email as string,
+      },
+      Number(page),
+      Number(limit),
+    );
 
     res.json({
       success: true,
-      data: users,
+      ...users,
     });
   };
 }

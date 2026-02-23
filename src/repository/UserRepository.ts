@@ -5,8 +5,23 @@ import { User } from "../models/User";
 export class UserRepository extends BaseRepository<User, any, any> {
   protected model = User;
 
-  async findFiltered(filters: { name?: string; email?: string }) {
-    return User.findAll({
+  async findByEmail(email: string) {
+    return User.findOne({ where: { email } });
+  }
+
+  async emailExists(email: string): Promise<boolean> {
+    return (await this.findByEmail(email)) !== null;
+  }
+
+  async findFiltered(
+    filters: { name?: string; email?: string },
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await User.findAndCountAll({
+      attributes: { exclude: ["password"] }, // 🔥🔥🔥 AQUI
       where: {
         ...(filters.name && {
           name: { [Op.like]: `%${filters.name}%` },
@@ -15,14 +30,15 @@ export class UserRepository extends BaseRepository<User, any, any> {
           email: { [Op.like]: `%${filters.email}%` },
         }),
       },
+      limit,
+      offset,
     });
-  }
 
-  async findByEmail(email: string) {
-    return User.findOne({ where: { email } });
-  }
-
-  async emailExists(email: string): Promise<boolean> {
-    return (await this.findByEmail(email)) !== null;
+    return {
+      total: count,
+      page,
+      totalPages: Math.ceil(count / limit),
+      data: rows,
+    };
   }
 }
