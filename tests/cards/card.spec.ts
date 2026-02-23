@@ -237,4 +237,25 @@ describe("Card API", () => {
     expect(res.status).to.equal(400);
     expect(res.body.success).to.be.false;
   });
+
+  it("deve revisar card com quality válida", async () => {
+    const res = await request(app)
+      .patch(`/api/cards/review/${pendingCardId}`)
+      .set("Authorization", `Bearer ${teacherToken}`)
+      .send({
+        quality: 5,
+      });
+
+    expect(res.status).to.equal(200);
+    expect(res.body.data.repetitions).to.be.greaterThan(0);
+  });
+
+  it("não deve revisar sem quality", async () => {
+    const res = await request(app)
+      .patch(`/api/cards/review/${pendingCardId}`)
+      .set("Authorization", `Bearer ${teacherToken}`)
+      .send({});
+
+    expect(res.status).to.equal(400);
+  });
 });

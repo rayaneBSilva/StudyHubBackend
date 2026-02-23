@@ -55,6 +55,9 @@ app.delete("/api/users/:id", authenticate, userController.delete);
 
 // ------------------ CARDS ------------------
 app.post("/api/cards", authenticate, cardController.create);
+app.get("/api/cards", authenticate, cardController.list);
+app.put("/api/cards/:id", authenticate, cardController.update);
+app.delete("/api/cards/:id", authenticate, cardController.delete);
 
 /* ------------------ DECKS ------------------ */
 app.post("/api/decks", authenticate, deckController.create);

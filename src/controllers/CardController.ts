@@ -139,4 +139,88 @@ export class CardController {
       });
     }
   };
+
+  list = async (req: any, res: Response) => {
+    try {
+      const { deck_id, status, page = 1, limit = 10 } = req.query;
+
+      if (!deck_id) {
+        return res.status(400).json({
+          success: false,
+          message: "deck_id é obrigatório para listar cards",
+        });
+      }
+
+      const pageNumber = Number(page);
+      const limitNumber = Number(limit);
+
+      const result = await this.service.listCardsByDeck(
+        Number(deck_id),
+        status,
+        pageNumber,
+        limitNumber,
+      );
+
+      res.json({
+        success: true,
+        data: result.data,
+        total: result.total,
+        page: pageNumber,
+        limit: limitNumber,
+      });
+    } catch (e: any) {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
+    }
+  };
+
+  update = async (req: any, res: Response) => {
+  try {
+    const cardId = Number(req.params.id);
+    const { frente, verso, deck_id } = req.body;
+
+    const updatedCard = await this.service.updateCard(cardId, {
+      frente,
+      verso,
+      deck_id,
+    });
+
+    res.json({
+      success: true,
+      data: updatedCard,
+      message: "Card atualizado com sucesso",
+    });
+  } catch (e: any) {
+    res.status(400).json({
+      success: false,
+      message: e.message,
+    });
+  }
+};
+
+delete = async (req: any, res: Response) => {
+  try {
+    const cardId = Number(req.params.id);
+
+    const deleted = await this.service.deleteCard(cardId);
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Card não encontrado",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Card deletado com sucesso",
+    });
+  } catch (e: any) {
+    res.status(400).json({
+      success: false,
+      message: e.message,
+    });
+  }
+};
 }

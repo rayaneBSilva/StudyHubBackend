@@ -125,4 +125,48 @@ export class CardService {
       Date.now() + card.interval * 24 * 60 * 60 * 1000,
     );
   }
+
+  async listCardsByDeck(
+    deck_id: number,
+    status?: string,
+    page = 1,
+    limit = 10,
+  ) {
+    const offset = (page - 1) * limit;
+    const where: any = { deck_id };
+
+    if (status) where.status = status;
+
+    const { rows, count } = await Card.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [["id", "ASC"]],
+    });
+
+    return { data: rows, total: count };
+  }
+
+  async updateCard(
+    cardId: number,
+    data: Partial<{ frente: string; verso: string; deck_id: number }>,
+  ) {
+    const card = await Card.findByPk(cardId);
+    if (!card) throw new Error("Card não encontrado");
+
+    if (data.frente !== undefined) card.frente = data.frente;
+    if (data.verso !== undefined) card.verso = data.verso;
+    if (data.deck_id !== undefined) card.deck_id = data.deck_id;
+
+    await card.save();
+    return card;
+  }
+
+  async deleteCard(cardId: number) {
+    const card = await Card.findByPk(cardId);
+    if (!card) return false;
+
+    await card.destroy();
+    return true;
+  }
 }
