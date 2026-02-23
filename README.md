@@ -32,17 +32,26 @@ Este repositório contém o **backend**, responsável pela autenticação, regra
 
 ### 📚 Conteúdo
 - Cards de estudo
+   - Criar, atualizar, deletar
+   - Aprovar/rejeitar (professor)
+   - Revisão de cards com método SM-2
+   - Filtragem por deck, autor e status
+   - Paginação com page e limit
 - Pastas organizadoras
 - Resumos acadêmicos
+   - Upload de PDFs para compartilhamento
+   - Filtragem por título, disciplina e autor
+   - Paginação
 
 ### 🔒 Regras de Acesso
 - Apenas **professores** podem criar/editar conteúdos
-- Alunos apenas visualizam
+- Alunos apenas visualizam e podem criar cards que ficam pendentes
 - Todas as rotas protegidas por autenticação
 
 ### 🔎 Recursos Avançados
-- Filtragem por título, disciplina e autor
-- Paginação (`page` e `limit`)
+- Paginação (page e limit) para decks, cards e resumos
+- Filtragem por autor, status, título e disciplina
+- Upload de PDFs para resumos
 - Busca textual
 
 ---
@@ -65,6 +74,8 @@ StudyHubBackend/
 ├── tests/
 │   ├── auth/
 │   ├── users/
+│   ├── deck/
+│   ├── files/
 │   ├── cards/
 │   ├── folders/
 │   ├── summaries/
@@ -118,6 +129,7 @@ npm test
 - Autorização por papel
 - CRUD de usuários
 - CRUD de cards
+- CRUD de decks
 - CRUD de pastas
 - CRUD de resumos
 - Testes de segurança (token ausente / inválido)
