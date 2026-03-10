@@ -5,8 +5,8 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import Decks from "../pages/Decks";
 import DeckDetails from "../pages/DeckDetails";
-import Folders from "../pages/Folders";
-import FolderDetails from "../pages/FolderDetails";
+// import Folders from "../pages/Folders";
+// import FolderDetails from "../pages/FolderDetails";
 
 export default function AppRoutes() {
   return (
@@ -20,9 +20,9 @@ export default function AppRoutes() {
 
         <Route path="/decks" element={<Decks />} />
         <Route path="/decks/:id" element={<DeckDetails />} />
-
+{/* 
         <Route path="/folders" element={<Folders />} />
-        <Route path="/folders/:id" element={<FolderDetails />} />
+        <Route path="/folders/:id" element={<FolderDetails />} /> */}
 
       </Routes>
     </BrowserRouter>
