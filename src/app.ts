@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import fs from "fs";
 import path from "path";
 import multer from "multer";
@@ -14,8 +15,15 @@ import { SummaryService } from "./services/SummaryService";
 import { DeckController } from "./controllers/DeckController";
 
 const app = express();
-app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
+app.use(express.json());
 // ------------------ MULTER CONFIG ------------------
 
 // Cria a pasta uploads/ na raiz do projeto se ainda não existir

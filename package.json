@@ -24,9 +24,11 @@
   "homepage": "https://github.com/rayaneBSilva/Projeto--Principio-de-Desenvolvimento-Web-#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.0",
     "mysql2": "^3.15.3",
     "pg": "^8.16.3",
     "sequelize": "^6.37.7"
@@ -34,10 +36,12 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/chai": "^5.2.3",
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mocha": "^10.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
     "chai": "^6.2.2",
