@@ -1,5 +1,7 @@
+
 import { createContext, useState } from "react";
 import type { ReactNode } from "react";
+import { loginRequest } from "../services/authService";
 
 interface User {
   id: number;
@@ -24,30 +26,38 @@ export const AuthContext = createContext({} as AuthContextType);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const [user, setUser] = useState<User | null>(() => {
-    try {
-      const storedUser = localStorage.getItem("@studyhub_user");
-      if (!storedUser) return null;
-      return JSON.parse(storedUser) as User;
-    } catch (error) {
-      console.error("Erro ao ler usuário do localStorage", error);
-      localStorage.removeItem("@studyhub_user");
-      return null;
-    }
-  });
+  try {
+    const storedUser = localStorage.getItem("@studyhub_user");
 
-  // LOGIN SEMPRE FUNCIONA - SEM VALIDAÇÃO
-  async function login(email: string, password: string) {
-    const mockUser = {
-      id: 1,
-      name: "Usuário Teste",
-      email: email || "test@test.com",
-      role: "student" as const
-    };
+    if (!storedUser) return null;
 
-    localStorage.setItem("@studyhub_token", "mock-token-12345");
-    localStorage.setItem("@studyhub_user", JSON.stringify(mockUser));
-    setUser(mockUser);
+    return JSON.parse(storedUser) as User;
+
+  } catch (error) {
+    console.error("Erro ao ler usuário do localStorage", error);
+    localStorage.removeItem("@studyhub_user");
+    return null;
   }
+});
+
+async function login(email: string, password: string) {
+
+  const response = await loginRequest(email, password);
+
+  const user = {
+    id: response.data.id,
+    name: response.data.name,
+    email: response.data.email,
+    role: response.data.role
+  };
+
+  const token = response.data.token;
+
+  localStorage.setItem("@studyhub_token", token);
+  localStorage.setItem("@studyhub_user", JSON.stringify(user));
+
+  setUser(user);
+}
 
   function logout() {
     localStorage.removeItem("@studyhub_token");
