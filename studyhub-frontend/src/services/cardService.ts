@@ -37,8 +37,8 @@ export const approveCard = async (id: number) => {
   return data;
 };
 
-export const rejectCard = async (id: number) => {
-  const { data } = await api.patch(`/cards/${id}/reject`);
+export const rejectCard = async (id: number, reason: string) => {
+  const { data } = await api.patch(`/cards/${id}/reject`, { reason });
   return data;
 };
 

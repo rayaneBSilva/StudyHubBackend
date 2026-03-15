@@ -55,6 +55,7 @@ export class UserService extends BaseService<
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token,
     };
   }

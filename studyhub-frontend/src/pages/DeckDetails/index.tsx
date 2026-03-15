@@ -244,7 +244,11 @@ export default function DeckDetails() {
   }
 
   async function handleReject(cardId: number) {
-    await rejectCard(cardId);
+    const reason = prompt("Motivo da rejeição:");
+
+    if (!reason) return;
+
+    await rejectCard(cardId, reason);
 
     setCards((prev) =>
       prev.map((c) => (c.id === cardId ? { ...c, status: "rejected" } : c)),
