@@ -74,7 +74,6 @@ export class CardService {
   async getCardsToStudy(userId: number, deckId: number) {
     return Card.findAll({
       where: {
-        autor_id: userId,
         deck_id: deckId,
         status: "APPROVED",
         next_review: {

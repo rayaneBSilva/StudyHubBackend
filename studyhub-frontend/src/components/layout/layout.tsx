@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./layout.css";
 
 interface Props {
-  title: string;
+  title: ReactNode;
   children: ReactNode;
 }
 
