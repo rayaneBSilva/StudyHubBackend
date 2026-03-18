@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { getDecks, createDeck, deleteDeck } from "../../services/deckService";
 import { useNavigate } from "react-router-dom";
-import { FiPlus, FiMoreHorizontal, FiEdit3, FiTrash2, FiLayers, FiBook, FiTarget } from "react-icons/fi";
+import {
+  FiPlus,
+  FiMoreHorizontal,
+  FiEdit3,
+  FiTrash2,
+  FiLayers,
+  FiBook,
+  FiTarget,
+} from "react-icons/fi";
 import "./styles.css";
 import Layout from "../../components/layout/layout";
 
@@ -17,6 +25,8 @@ export default function Decks() {
   const [title, setTitle] = useState("");
   const [modal, setModal] = useState(false);
   const [deckMenuOpen, setDeckMenuOpen] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(9);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchDecks() {
@@ -41,7 +51,7 @@ export default function Decks() {
 
       if (response?.success && response.data) {
         const newDeck = response.data;
-        setDecks(prev => [...prev, newDeck]);
+        setDecks((prev) => [...prev, newDeck]);
         navigate(`/decks/${newDeck.id}`);
       } else {
         const data = await getDecks();
@@ -58,11 +68,17 @@ export default function Decks() {
 
     try {
       await deleteDeck(deckId);
-      setDecks(prev => prev.filter(d => d.id !== deckId));
+      setDecks((prev) => prev.filter((d) => d.id !== deckId));
     } catch (error) {
       console.error("Erro ao deletar deck", error);
     }
   }
+
+  const filteredDecks = decks.filter((deck) =>
+    deck.nome.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  const visibleDecks = filteredDecks.slice(0, visibleCount);
 
   return (
     <Layout title="Decks">
@@ -76,7 +92,8 @@ export default function Decks() {
                 Seus Decks de Estudo
               </h1>
               <p className="page-subtitle">
-                Organize seus flashcards em decks temáticos e acelere seu aprendizado
+                Organize seus flashcards em decks temáticos e acelere seu
+                aprendizado
               </p>
             </div>
             <button className="create-deck-btn" onClick={() => setModal(true)}>
@@ -102,7 +119,7 @@ export default function Decks() {
               <FiTarget />
             </div>
             <div className="stat-content">
-              <h3>{decks.length * 15}</h3>
+              <h3>{decks.length * 9}</h3>
               <p>Cards Estudados</p>
             </div>
           </div>
@@ -111,7 +128,18 @@ export default function Decks() {
         {/* Decks Grid */}
         <div className="decks-section">
           <h2 className="section-title">Meus Decks</h2>
-          
+
+          <div className="deck-search">
+            <input
+              type="text"
+              placeholder="Pesquisar deck..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setVisibleCount(9);
+              }}
+            />
+          </div>
           {decks.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">
@@ -119,14 +147,17 @@ export default function Decks() {
               </div>
               <h3>Nenhum deck criado ainda</h3>
               <p>Comece criando seu primeiro deck de estudos!</p>
-              <button className="empty-action-btn" onClick={() => setModal(true)}>
+              <button
+                className="empty-action-btn"
+                onClick={() => setModal(true)}
+              >
                 <FiPlus />
                 Criar Primeiro Deck
               </button>
             </div>
           ) : (
             <div className="decks-grid">
-              {decks.map(deck => (
+              {visibleDecks.map((deck) => (
                 <div key={deck.id} className="deck-card">
                   <div className="deck-card-header">
                     <div className="deck-icon">
@@ -136,15 +167,17 @@ export default function Decks() {
                       className="deck-menu-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setDeckMenuOpen(deckMenuOpen === deck.id ? null : deck.id);
+                        setDeckMenuOpen(
+                          deckMenuOpen === deck.id ? null : deck.id,
+                        );
                       }}
                     >
                       <FiMoreHorizontal />
                     </button>
-                    
+
                     {deckMenuOpen === deck.id && (
                       <div className="deck-menu">
-                        <button 
+                        <button
                           className="menu-item"
                           onClick={() => navigate(`/decks/${deck.id}`)}
                         >
@@ -165,8 +198,11 @@ export default function Decks() {
                       </div>
                     )}
                   </div>
-                  
-                  <div className="deck-content" onClick={() => navigate(`/decks/${deck.id}`)}>
+
+                  <div
+                    className="deck-content"
+                    onClick={() => navigate(`/decks/${deck.id}`)}
+                  >
                     <h3 className="deck-title">{deck.nome}</h3>
                     <div className="deck-stats">
                       <span className="stat-item">24 cards</span>
@@ -175,18 +211,34 @@ export default function Decks() {
                     </div>
                     <div className="deck-progress">
                       <div className="progress-bar">
-                        <div className="progress-fill" style={{width: '85%'}}></div>
+                        <div
+                          className="progress-fill"
+                          style={{ width: "85%" }}
+                        ></div>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="deck-footer">
-                    <button className="study-btn" onClick={() => navigate(`/decks/${deck.id}`)}>
+                    <button
+                      className="study-btn"
+                      onClick={() => navigate(`/decks/${deck.id}`)}
+                    >
                       Estudar Agora
                     </button>
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          {visibleCount < filteredDecks.length && (
+            <div className="load-more-container">
+              <button
+                className="load-more-btn"
+                onClick={() => setVisibleCount((prev) => prev + 9)}
+              >
+                Carregar mais decks
+              </button>
             </div>
           )}
         </div>
@@ -204,15 +256,22 @@ export default function Decks() {
                   className="deck-name-input"
                   placeholder="Ex: Matemática Básica, Inglês Intermediário..."
                   value={title}
-                  onChange={e => setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
               </div>
               <div className="modal-footer">
-                <button className="btn-secondary" onClick={() => setModal(false)}>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setModal(false)}
+                >
                   Cancelar
                 </button>
-                <button className="btn-primary" onClick={handleCreate} disabled={!title.trim()}>
+                <button
+                  className="btn-primary"
+                  onClick={handleCreate}
+                  disabled={!title.trim()}
+                >
                   <FiPlus />
                   Criar Deck
                 </button>

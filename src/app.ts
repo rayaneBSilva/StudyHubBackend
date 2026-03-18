@@ -24,6 +24,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // ------------------ MULTER CONFIG ------------------
 
 // Cria a pasta uploads/ na raiz do projeto se ainda não existir
