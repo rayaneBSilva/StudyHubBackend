@@ -18,11 +18,14 @@ export default function Folders() {
 
   async function loadFolders() {
     const response = await api.get("/folders");
-    setFolders(response.data);
+    const list = Array.isArray(response.data?.data)
+      ? response.data.data
+      : response.data?.data?.data || [];
+
+    setFolders(list);
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadFolders();
   }, []);
 
@@ -31,8 +34,9 @@ export default function Folders() {
 
     try {
       const response = await api.post("/folders", { nome });
+      const created = response.data?.data || response.data;
 
-      setFolders((prev) => [...prev, response.data]);
+      setFolders((prev) => [...prev, created]);
       setModalOpen(false);
       setNome("");
     } catch {
@@ -43,24 +47,38 @@ export default function Folders() {
   async function handleDelete(id: number) {
     if (!confirm("Deseja deletar esta pasta?")) return;
 
-    await api.delete(`/folders/${id}`);
-    setFolders((prev) => prev.filter((f) => f.id !== id));
+    try {
+      await api.delete(`/folders/${id}`);
+      setFolders((prev) => prev.filter((f) => f.id !== id));
+    } catch {
+      alert("Erro ao deletar pasta");
+    }
   }
 
   return (
     <Layout title="Pastas">
-      <h1>Pastas</h1>
-
-      <button onClick={() => setModalOpen(true)}>Nova Pasta</button>
+      <div className="folders-header">
+        <h1>Pastas</h1>
+        <button className="btn-create" onClick={() => setModalOpen(true)}>
+          Nova Pasta
+        </button>
+      </div>
 
       <div className="folders-grid">
         {folders.map((folder) => (
-          <div key={folder.id} className="folder-card">
-            <h3 onClick={() => navigate(`/folders/${folder.id}`)}>
-              {folder.nome}
-            </h3>
-
-            <button onClick={() => handleDelete(folder.id)}>
+          <div
+            key={folder.id}
+            className="folder-card"
+            onClick={() => navigate(`/folders/${folder.id}`)}
+          >
+            <h3>{folder.nome}</h3>
+            <button
+              className="delete"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(folder.id);
+              }}
+            >
               Deletar
             </button>
           </div>
@@ -69,7 +87,7 @@ export default function Folders() {
 
       {modalOpen && (
         <div className="modal">
-          <div className="modal-content">
+          <div className="modal-box">
             <h2>Criar Pasta</h2>
 
             <input
@@ -78,8 +96,10 @@ export default function Folders() {
               onChange={(e) => setNome(e.target.value)}
             />
 
-            <button onClick={handleCreateFolder}>Criar</button>
-            <button onClick={() => setModalOpen(false)}>Cancelar</button>
+            <div className="modal-actions">
+              <button onClick={() => setModalOpen(false)}>Cancelar</button>
+              <button onClick={handleCreateFolder}>Criar</button>
+            </div>
           </div>
         </div>
       )}

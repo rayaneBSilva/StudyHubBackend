@@ -7,8 +7,9 @@ import Decks from "../pages/Decks";
 import DeckDetails from "../pages/DeckDetails";
 import StudyPage from "../pages/Study/StudyPage";
 import UsersPage from "../pages/User/UsersPage";
-// import Folders from "../pages/Folders";
-// import FolderDetails from "../pages/FolderDetails";
+import Folders from "../pages/Folders";
+import FolderDetails from "../pages/FolderDetails";
+import Summaries from "../pages/Summaries";
 
 export default function AppRoutes() {
   return (
@@ -24,9 +25,9 @@ export default function AppRoutes() {
         <Route path="/decks/:id" element={<DeckDetails />} />
         <Route path="/study/:deckId" element={<StudyPage />} />
         <Route path="/users" element={<UsersPage />} />
-{/* 
         <Route path="/folders" element={<Folders />} />
-        <Route path="/folders/:id" element={<FolderDetails />} /> */}
+        <Route path="/folders/:id" element={<FolderDetails />} />
+        <Route path="/summaries" element={<Summaries />} />
 
       </Routes>
     </BrowserRouter>
