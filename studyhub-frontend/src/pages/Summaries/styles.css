@@ -1,0 +1,33 @@
+.summaries-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.summaries-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:20px;
+}
+
+.summary-card{
+  background:white;
+  padding:18px;
+  border-radius:10px;
+  border:1px solid #e2e8f0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.summary-card a{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.summary-card a:hover{
+  text-decoration:underline;
+}
+

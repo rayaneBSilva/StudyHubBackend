@@ -13,12 +13,19 @@ export default function Login() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    try {
-      await login(email, password);
-      navigate("/dashboard");
-    } catch {
-      alert("Credenciais inválidas");
-    }
+    
+    // BYPASS TOTAL - sempre faz login com sucesso
+    const mockUser = {
+      id: 1,
+      name: "Usuário Teste",
+      email: email || "test@test.com",
+      role: "student" as const
+    };
+    
+    localStorage.setItem("@studyhub_token", "mock-token-12345");
+    localStorage.setItem("@studyhub_user", JSON.stringify(mockUser));
+    
+    navigate("/dashboard");
   }
 
   return (
