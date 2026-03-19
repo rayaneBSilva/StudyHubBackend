@@ -17,6 +17,12 @@ Este repositório contém o **backend**, responsável pela autenticação, regra
 - **Supertest** — Testes de API
 - **Insomnia** — Testes manuais
 - **Swagger** — Documentação da API
+  
+- **React**
+- **TypeScript**
+- **Vite**
+- **Axios**
+- **React Router**
 
 ---
 
@@ -70,6 +76,18 @@ StudyHubBackend/
 │   ├── middlewares/
 │   ├── utils/
 │   └── config/
+├── studyhub-frontend/
+│ ├── src/
+│ │ ├── api/
+│ │ ├── components/
+│ │ ├── context/
+│ │ ├── hooks/
+│ │ ├── pages/
+│ │ ├── routes/
+│ │ ├── services/
+│ │ ├── styles/
+│ │ ├── App.tsx
+│ │ └── main.tsx
 │
 ├── tests/
 │   ├── auth/
@@ -109,9 +127,14 @@ StudyHubBackend/
    ```bash
    npm run dev
    ```
+4. Rode o frontend:
+  ```bash
+   cd studyhub-frontend
+   npm run dev
+   ```
 5. Acesse no navegador:
   ```arduino
-   http://localhost:3000
+   http://localhost:5173
    ```
 
 ---
@@ -177,8 +200,9 @@ Para facilitar os testes da API, você pode importar o workspace do Insomnia:
 ## Evidência da principal funcionalidade do seu projeto:
 [Evidencia02.webm](https://github.com/user-attachments/assets/d0efe350-1553-422e-b418-f5537576729d)
 
+## Funcionamento do Frontend
 
-
+[terceira_entrega.webm](https://github.com/user-attachments/assets/943d760e-d826-4064-b7e6-ca0b782352f2)
 
 
 
